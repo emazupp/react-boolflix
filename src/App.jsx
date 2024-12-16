@@ -2,13 +2,16 @@
 import { BoolflixProvider } from "./contexts/BoolflixContext";
 // components
 import Header from "./components/Header";
+import Main from "./components/Main";
 
 function App() {
-  console.log(import.meta.env);
   return (
     <>
       <BoolflixProvider>
-        <Header />
+        <div className="wrapper">
+          <Header />
+          <Main />
+        </div>
       </BoolflixProvider>
     </>
   );

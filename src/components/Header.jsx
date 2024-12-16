@@ -3,7 +3,12 @@ import Filters from "./Filters";
 export default function Header() {
   return (
     <>
-      <Filters />
+      <header className="container">
+        <div>
+          <span className="logo">BOOLFLIX</span>
+        </div>
+        <Filters />
+      </header>
     </>
   );
 }
