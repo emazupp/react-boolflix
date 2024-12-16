@@ -1,8 +1,15 @@
+// context
+import { BoolflixProvider } from "./contexts/BoolflixContext";
+// components
+import Header from "./components/Header";
+
 function App() {
   console.log(import.meta.env);
   return (
     <>
-      <p>api key: {import.meta.env.VITE_TEST_VARIABLE}</p>
+      <BoolflixProvider>
+        <Header />
+      </BoolflixProvider>
     </>
   );
 }
