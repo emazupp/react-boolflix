@@ -3,11 +3,12 @@ import { useBoolflixContext } from "../contexts/BoolflixContext";
 
 export default function SearchBar() {
   const [inputValue, setInputValue] = useState("");
-  const { searchFilmsByTitle } = useBoolflixContext();
+  const { filmsData, tvSeriesData } = useBoolflixContext();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    searchFilmsByTitle(inputValue);
+    filmsData.searchFilms(inputValue);
+    tvSeriesData.searchTvSeries(inputValue);
   };
 
   return (

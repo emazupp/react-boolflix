@@ -16,24 +16,40 @@ export const BoolflixProvider = ({ children }) => {
       Authorization: `Bearer ${import.meta.env.VITE_TMDB_APIKEY}`,
     },
   };
-
-  const searchFilmsByTitle = (value) => {
+  const searchFilms = (value) => {
     fetch(`https://api.themoviedb.org/3/search/movie?query=${value}`, options)
       .then((res) => res.json())
-      .then((films) => {
-        const filmsFetched = films.results;
-        console.log(filmsFetched);
-        const newFilms = { ...data, films: filmsFetched };
-        setData(newFilms);
+      .then((result) => {
+        console.log("api films eseguita");
+
+        const filmsGetted = result.results;
+        setFilms({ ...filmsData, films: filmsGetted });
       });
   };
 
-  const [data, setData] = useState({
+  const searchTvSeries = (value) => {
+    fetch(`https://api.themoviedb.org/3/search/tv?query=${value}`, options)
+      .then((res) => res.json())
+      .then((result) => {
+        console.log("api tv eseguita");
+
+        const tvSeriesGetted = result.results;
+        setTvSeries({ ...tvSeriesData, tvSeries: tvSeriesGetted });
+      });
+  };
+  const [filmsData, setFilms] = useState({
     films: [],
-    searchFilmsByTitle,
+    searchFilms,
+  });
+
+  const [tvSeriesData, setTvSeries] = useState({
+    tvSeries: [],
+    searchTvSeries,
   });
 
   return (
-    <BoolflixContext.Provider value={data}>{children}</BoolflixContext.Provider>
+    <BoolflixContext.Provider value={{ filmsData, tvSeriesData }}>
+      {children}
+    </BoolflixContext.Provider>
   );
 };
