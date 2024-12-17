@@ -112,6 +112,7 @@ main {
 
 .card-description p {
   margin-bottom: 10px;
+  font-size: calc(1.1 * 1vw);
 }
 
 .card:hover .card-description {
