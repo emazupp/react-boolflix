@@ -20,7 +20,15 @@ export const BoolflixProvider = ({ children }) => {
     fetch(`https://api.themoviedb.org/3/search/movie?query=${value}`, options)
       .then((res) => res.json())
       .then((result) => {
-        const filmsGetted = result.results;
+        const filmsGetted = result.results.map((film) => ({
+          id: film.id,
+          language: film.original_language.toUpperCase(),
+          originalTitle: film.original_title,
+          title: film.title,
+          vote: film.vote_average,
+          img: film.poster_path,
+          description: film.overview,
+        }));
         setFilms({ ...filmsData, films: filmsGetted });
       });
   };
@@ -29,7 +37,15 @@ export const BoolflixProvider = ({ children }) => {
     fetch(`https://api.themoviedb.org/3/search/tv?query=${value}`, options)
       .then((res) => res.json())
       .then((result) => {
-        const tvSeriesGetted = result.results;
+        const tvSeriesGetted = result.results.map((tvSeries) => ({
+          id: tvSeries.id,
+          language: tvSeries.original_language.toUpperCase(),
+          originalTitle: tvSeries.original_name,
+          title: tvSeries.name,
+          vote: tvSeries.vote_average,
+          img: tvSeries.poster_path,
+          description: tvSeries.overview,
+        }));
         setTvSeries({ ...tvSeriesData, tvSeries: tvSeriesGetted });
       });
   };
