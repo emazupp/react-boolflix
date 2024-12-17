@@ -3,9 +3,14 @@ export default function Card({ el }) {
   const imgPath = `https://image.tmdb.org/t/p/w342/${el.img}`;
   const starsArray = ["", "", "", "", ""];
   const maxYellowStars = Math.floor(el.vote / 2);
+  const cast = [];
+  const handleHoverCard = () => {
+    console.log("ciao");
+  };
+
   return (
     <>
-      <div className="card">
+      <div className="card" onMouseEnter={handleHoverCard}>
         <div className="card-img">
           <img src={el.img ? imgPath : defaultPoster} alt={el.id} />
         </div>
@@ -22,11 +27,15 @@ export default function Card({ el }) {
             <strong>Voto: </strong>
             {starsArray.map((star, index) =>
               index < maxYellowStars ? (
-                <i class="fa-solid fa-star"></i>
+                <i key={index} className="fa-solid fa-star"></i>
               ) : (
-                <i class="fa-regular fa-star"></i>
+                <i key={index} className="fa-regular fa-star"></i>
               )
             )}
+          </p>
+          <p>
+            <strong>Cast: </strong>
+            {cast}
           </p>
           <p>
             <strong>Overview: </strong>
