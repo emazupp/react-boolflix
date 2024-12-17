@@ -13,15 +13,13 @@ export const BoolflixProvider = ({ children }) => {
     method: "GET",
     headers: {
       accept: "application/json",
-      Authorization: `Bearer ${import.meta.env.VITE_TMDB_APIKEY}`,
+      Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlOWE3ZmY4MzQ1YzYyYTY4ZTFkNWE4NTUwOWM0YWU3MSIsIm5iZiI6MTczNDM0ODEyOS4xNDQsInN1YiI6IjY3NjAwZDYxNjczZmZlYTBmMjdkZGI2YiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.INT5fSfOpuY9CewHWzoLbyt2uDk1Lj-9a9A1-N9Dmq8`,
     },
   };
   const searchFilms = (value) => {
     fetch(`https://api.themoviedb.org/3/search/movie?query=${value}`, options)
       .then((res) => res.json())
       .then((result) => {
-        console.log("api films eseguita");
-
         const filmsGetted = result.results;
         setFilms({ ...filmsData, films: filmsGetted });
       });
@@ -31,8 +29,6 @@ export const BoolflixProvider = ({ children }) => {
     fetch(`https://api.themoviedb.org/3/search/tv?query=${value}`, options)
       .then((res) => res.json())
       .then((result) => {
-        console.log("api tv eseguita");
-
         const tvSeriesGetted = result.results;
         setTvSeries({ ...tvSeriesData, tvSeries: tvSeriesGetted });
       });
