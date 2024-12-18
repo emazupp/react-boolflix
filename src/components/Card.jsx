@@ -1,16 +1,21 @@
+import { useBoolflixContext } from "../contexts/BoolflixContext";
+
 export default function Card({ el }) {
   const defaultPoster = "https://placehold.co/342";
   const imgPath = `https://image.tmdb.org/t/p/w342/${el.img}`;
   const starsArray = ["", "", "", "", ""];
   const maxYellowStars = Math.floor(el.vote / 2);
-  const cast = [];
-  const handleHoverCard = () => {
-    console.log("ciao");
+
+  const { fetchDescriptionValues, descriptions } = useBoolflixContext();
+
+  const handleHoverCard = (id) => {
+    !descriptions.find((el) => el.id == id) &&
+      fetchDescriptionValues(el.type, el.id, el.genresIDs);
   };
 
   return (
     <>
-      <div className="card" onMouseEnter={handleHoverCard}>
+      <div className="card" onMouseEnter={() => handleHoverCard(el.id)}>
         <div className="card-img">
           <img src={el.img ? imgPath : defaultPoster} alt={el.id} />
         </div>
@@ -35,7 +40,7 @@ export default function Card({ el }) {
           </p>
           <p>
             <strong>Cast: </strong>
-            {cast}
+            {el.cast}
           </p>
           <p>
             <strong>Overview: </strong>
@@ -52,6 +57,10 @@ export default function Card({ el }) {
               }/flat/64.png`}
               alt={el.language.toUpperCase()}
             ></img>
+          </p>
+          <p>
+            <strong>Generi: </strong>
+            {el.genres}
           </p>
         </div>
       </div>

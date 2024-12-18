@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { createContext } from "react";
 
 // CREAZIONE CONTESTO
@@ -22,14 +22,16 @@ export const BoolflixProvider = ({ children }) => {
       .then((result) => {
         const filmsGetted = result.results.map((film) => ({
           id: film.id,
+          type: "movie",
           language: film.original_language.toUpperCase(),
           originalTitle: film.original_title,
           title: film.title,
           vote: film.vote_average,
           img: film.poster_path,
           description: film.overview,
+          genresIDs: film.genre_ids,
         }));
-        setFilms({ ...filmsData, films: filmsGetted });
+        setFilmsData({ ...filmsData, films: filmsGetted });
       });
   };
 
@@ -39,17 +41,19 @@ export const BoolflixProvider = ({ children }) => {
       .then((result) => {
         const tvSeriesGetted = result.results.map((tvSeries) => ({
           id: tvSeries.id,
+          type: "tv",
           language: tvSeries.original_language.toUpperCase(),
           originalTitle: tvSeries.original_name,
           title: tvSeries.name,
           vote: tvSeries.vote_average,
           img: tvSeries.poster_path,
           description: tvSeries.overview,
+          genresIDs: tvSeries.genre_ids,
         }));
         setTvSeries({ ...tvSeriesData, tvSeries: tvSeriesGetted });
       });
   };
-  const [filmsData, setFilms] = useState({
+  const [filmsData, setFilmsData] = useState({
     films: [],
     searchFilms,
   });
@@ -59,8 +63,59 @@ export const BoolflixProvider = ({ children }) => {
     searchTvSeries,
   });
 
+  async function fetchGenres(type, genresIDs) {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/genre/${type}/list`,
+      options
+    );
+    const data = await res.json();
+    return data.genres
+      .filter((el) => genresIDs.includes(el.id))
+      .map((el) => el.name)
+      .join(", ");
+  }
+
+  async function fetchCast(type, id) {
+    const res = await fetch(
+      `https://api.themoviedb.org/3/${type}/${id}/credits`,
+      options
+    );
+    const data = await res.json();
+    return data.cast
+      .filter((el, index) => index < 5)
+      .map((el) => el.name)
+      .join(", ");
+  }
+
+  const fetchDescriptionValues = async (type, id, genresIDs) => {
+    const newCast = await fetchCast(type, id);
+    const newGenres = await fetchGenres(type, genresIDs);
+
+    setCast(newCast);
+    setGenres(newGenres);
+
+    setDescriptions([
+      ...descriptions,
+      { id, type, cast: newCast, genres: newGenres },
+    ]);
+
+    const newFilmsData = filmsData.films.map((el) => {
+      if (el.id == id) return { ...el, cast: newCast, genres: newGenres };
+      else return el;
+    });
+
+    setFilmsData({ ...filmsData, films: newFilmsData });
+  };
+
+  const [cast, setCast] = useState([]);
+  const [genres, setGenres] = useState([]);
+
+  const [descriptions, setDescriptions] = useState([]);
+
   return (
-    <BoolflixContext.Provider value={{ filmsData, tvSeriesData }}>
+    <BoolflixContext.Provider
+      value={{ filmsData, tvSeriesData, fetchDescriptionValues, descriptions }}
+    >
       {children}
     </BoolflixContext.Provider>
   );
