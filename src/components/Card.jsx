@@ -6,16 +6,19 @@ export default function Card({ el }) {
   const starsArray = ["", "", "", "", ""];
   const maxYellowStars = Math.floor(el.vote / 2);
 
-  const { fetchDescriptionValues, descriptions } = useBoolflixContext();
+  const { fetchDescriptionValues } = useBoolflixContext();
 
-  const handleHoverCard = (id) => {
-    !descriptions.find((el) => el.id == id) &&
-      fetchDescriptionValues(el.type, el.id, el.genresIDs);
+  const handleHoverCard = (id, type, genresIDs) => {
+    console.log(el);
+    !el.descriptionFetched && fetchDescriptionValues(type, id, genresIDs);
   };
 
   return (
     <>
-      <div className="card" onMouseEnter={() => handleHoverCard(el.id)}>
+      <div
+        className="card"
+        onMouseEnter={() => handleHoverCard(el.id, el.type, el.genresIDs)}
+      >
         <div className="card-img">
           <img src={el.img ? imgPath : defaultPoster} alt={el.id} />
         </div>

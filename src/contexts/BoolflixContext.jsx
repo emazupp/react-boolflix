@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { createContext } from "react";
 
 // CREAZIONE CONTESTO
@@ -30,6 +30,7 @@ export const BoolflixProvider = ({ children }) => {
           img: film.poster_path,
           description: film.overview,
           genresIDs: film.genre_ids,
+          descriptionFetched: false,
         }));
         setFilmsData({ ...filmsData, films: filmsGetted });
       });
@@ -49,8 +50,9 @@ export const BoolflixProvider = ({ children }) => {
           img: tvSeries.poster_path,
           description: tvSeries.overview,
           genresIDs: tvSeries.genre_ids,
+          descriptionFetched: false,
         }));
-        setTvSeries({ ...tvSeriesData, tvSeries: tvSeriesGetted });
+        setTvSeriesData({ ...tvSeriesData, tvSeries: tvSeriesGetted });
       });
   };
   const [filmsData, setFilmsData] = useState({
@@ -58,7 +60,7 @@ export const BoolflixProvider = ({ children }) => {
     searchFilms,
   });
 
-  const [tvSeriesData, setTvSeries] = useState({
+  const [tvSeriesData, setTvSeriesData] = useState({
     tvSeries: [],
     searchTvSeries,
   });
@@ -94,27 +96,41 @@ export const BoolflixProvider = ({ children }) => {
     setCast(newCast);
     setGenres(newGenres);
 
-    setDescriptions([
-      ...descriptions,
-      { id, type, cast: newCast, genres: newGenres },
-    ]);
+    if (type == "movie") {
+      const newFilmsData = filmsData.films.map((el) => {
+        if (el.id == id)
+          return {
+            ...el,
+            cast: newCast,
+            genres: newGenres,
+            descriptionFetched: true,
+          };
+        else return el;
+      });
 
-    const newFilmsData = filmsData.films.map((el) => {
-      if (el.id == id) return { ...el, cast: newCast, genres: newGenres };
-      else return el;
-    });
+      setFilmsData({ ...filmsData, films: newFilmsData });
+    } else if (type == "tv") {
+      const newTvSeries = tvSeriesData.tvSeries.map((el) => {
+        if (el.id == id)
+          return {
+            ...el,
+            cast: newCast,
+            genres: newGenres,
+            descriptionFetched: true,
+          };
+        else return el;
+      });
 
-    setFilmsData({ ...filmsData, films: newFilmsData });
+      setTvSeriesData({ ...tvSeriesData, tvSeries: newTvSeries });
+    }
   };
 
   const [cast, setCast] = useState([]);
   const [genres, setGenres] = useState([]);
 
-  const [descriptions, setDescriptions] = useState([]);
-
   return (
     <BoolflixContext.Provider
-      value={{ filmsData, tvSeriesData, fetchDescriptionValues, descriptions }}
+      value={{ filmsData, tvSeriesData, fetchDescriptionValues }}
     >
       {children}
     </BoolflixContext.Provider>
